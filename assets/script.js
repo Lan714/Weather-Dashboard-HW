@@ -1,26 +1,40 @@
-const localStorage = window.localStorage
-const savedTrip = (localStorage.getItem('savedTrip')) || ''
+let cities = [];
 
+let cityFormEl = document.querySelector(`#city-search-form`)
+let cityInput = document.querySelector(`#city`);
+let weatherContainerEl = document.querySelector(`current-weather-container`)
+let citySearchInputEl = document.querySelector(`#searched-city`)
+let forecastTitle = document.querySelector(`#forecast`)
+let forecastContainerEl = document.querySelector(`#fiveday-container`)
+let pastSearchButtonEl = document.querySelector(`#past-search-buttons`)
 
-document.getElementById('calculateRoute').addEventListener('click', event => {
+let formSubmitHandler = () => {
   event.preventDefault()
+  let city = cityInputEl.value.trim()
+  if(city){
+    getCityWeather(city);
+    get5Day(city);
+    cities.unshift({city});
+    cityInputEl.value = ''
+  } else {
+    alert(`Please enter a city`)
+  }
+  saveSearch()
+  pastSearch()
+}
 
-  const startLocation = document.getElementById('startLocation').value
-  const endLocation = document.getElementById('endLocation').value
+let saveSearch = () =>{
+  localStorage.setItems(`cities`, JSON.stringify(cities))
+}
 
-  axios.get(`https://openweathermap.org/api)`)
-    .then(res => {
-      const trip = res.data
+var get 
 
-      document.getElementById('startLocation').innerHTML = ''
-      document.getElementById('endLocation').innerHTML = ''
-
-    
-      document.getElementById('routeTime').textContent = `${trip.route.formattedTime}`
-    })
-})
+weather.main.humidity = humidity
+weather.main.temp = temperature
+weather.wind.speed = milesperhour
 
 
+const API = 6526862a1809d80a03753664a86c2445
 // GIVEN a weather dashboard with form inputs
 // WHEN I search for a city
 // THEN I am presented with current and future conditions for that city and that city is added to the search history
