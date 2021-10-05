@@ -49,6 +49,17 @@ function renderCities(cities, current) {
     list.append(city)
   });
 
+  document.addEventListener('click', event => {
+    if ( event.target.classList.contains('city')) {
+      let cityName = event.target.innerHtml
+      console.log(cityName)
+      lastCity = cityName
+      renderCities(cities, cityName)
+      getWeather(cityName)
+      localStorage.setItem('last', lastCity)
+    }
+  })
+
 }
 
 
