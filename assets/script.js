@@ -112,13 +112,53 @@ function renderCities(cities, current) {
         for(i=1; i < 6; i++)
         {
           let card = document.createElement('div')
-          let icon = res.data.daily[i].weather[0]0
+          let icon = res.data.daily[i].weather[0].icon
+
+          card.style.display = "inline-block"
+          card.className = "card bg-primary text-white m-3"
+          card.style.width = "10rem"
+          card.style.justifyContent = "space-between"
+          card.innerHTML=`
+             <div class="card-body">
+         <h5 class="card-title">${moment().add(i, 'days').format('l')}</h5>
+         <img id="wicon" src="http://openweathermap.org/img/w/${icon}.png" alt="Weather icon">
+          <p class="card-text">Temperature: ${res.data.daily[i].temp.day} F
+          </p>
+          <p class="card-text">Humidity: ${res.data.daily[i].humidity}% </p>
+           </div>
+          `
+          container2.append(card)
         }
+      }).catch(function (error) {
+        console.error(error);
       })
+    }).catch(function(error){
+      console.error(error);
     })
   }
 
-}
+  function getColorCodeForUVIndex(uvIndex) {
+    var uvIndexValue = parseFloat(uvIndex);
+    var colorcode = "";
+    if (uvIndexValue <= 2) {
+      colorcode = "#00ff00";
+    }
+    else if ((uvIndexValue > 2) && (uvIndexValue <= 5)) {
+      colorcode = "#ffff00";
+    }
+    else if ((uvIndexValue > 5) && (uvIndexValue <= 7)) {
+      colorcode = "#ffa500";
+    }
+    else if ((uvIndexValue > 7) && (uvIndexValue <= 10)) {
+      colorcode = "#9e1a1a";
+    }
+    else if (uvIndexValue > 10) {
+      colorcode = "#7f00ff";
+    }
+    return colorcode;
+  }
+
+getWeather(lastCity)
 
 
 
