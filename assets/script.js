@@ -1,3 +1,6 @@
+const API = d91f911bcf2c0f925fb6535547a5ddc9
+
+
 let cities = JSON.parse(localStorage.getItems('cities')) || []
 let lastCity - (localStorage.getItem('last')) || ""
 
@@ -58,10 +61,41 @@ function renderCities(cities, current) {
       getWeather(cityName)
       localStorage.setItem('last', lastCity)
     }
+
   })
+
+  const getWeather = (city) => {
+    axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city},us&units=imperial&appid=${API}`)
+    .then(res => {
+      let icon = res.data.weather[0].icon;
+
+      let erase = document.getElementById('todaysWeather')
+      removeAllChildNodes(erase)
+      console.log(res.data)
+      let container = document.createElement('div')
+      let header = document.createElement('h3')
+      header.innerHTML = `
+      ${res.data.name}
+      ${moment().format(`1`)}
+      <img id=""wicon" src="http://openweathermap.org/img/w/${icon}.png" alt="Weather icon">
+      `
+
+      container.append(header)
+      let temperature = document.createElement('p')
+      temperature.textContent = `Temperature: ${res.data.main.temp} F°`
+      container.append(temperature)
+      let humdity = document.createElement('p')
+      humdity.textContent = `Humidity: ${res.data.main.humdity}%`
+      container.append(humdity)
+      let windSpeed = document.createElement('p')
+      windSpeed.textContent = `Wind Speed: ${res.data.wind.speed} MPH`
+      container.append.(windSpeed)
+
+      document
+    })
+  }
 
 }
 
 
 
-const API = 6526862a1809d80a03753664a86c2445
