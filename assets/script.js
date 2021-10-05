@@ -91,7 +91,30 @@ function renderCities(cities, current) {
       windSpeed.textContent = `Wind Speed: ${res.data.wind.speed} MPH`
       container.append.(windSpeed)
 
-      document
+      document.getElementById('todaysWeather').append(container)
+      axios.get(`https://api.openweathermap.org/data/2.5/onecall?lat=${res.data.coord.lat}&lon=${res.data.coord.lon}&exclude=minutely,hourly&units=imperial&appid=${API}`)
+      .then(res => {
+        console.log(res)
+        let uvIndex = document.createElement('div')
+        let uv = res.data.current.uvi
+        let uviColor = getColorCodeForUVIndex(uv)
+        uvIndex.innerHTML = `<p style = "display: inline-block;">UV Index: </p> <span style= "display: 'inline-block'; background-color:${uviColor};margin:4px; padding: 5px; text-align:center;">${uv}</span>`
+
+        container.append(uvIndex)
+
+        let container2 = document.createElement('div')
+        container2.innerHTML= `
+        <h4 class = 'ms-3'>5-Day Forecast</h4>`
+        
+        removeAllChildNodes(document.getElementById('daily'))
+        document.getElementById('daily').append(container2)
+
+        for(i=1; i < 6; i++)
+        {
+          let card = document.createElement('div')
+          let icon = res.data.daily[i].weather[0]0
+        }
+      })
     })
   }
 
