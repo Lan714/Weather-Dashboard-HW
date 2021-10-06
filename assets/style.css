@@ -1,0 +1,16 @@
+  body {
+    height: 100%;
+    background: rgb(237, 236, 241);
+    background: linear-gradient(to left top, white, #71A3FF) fixed;
+  }
+
+  .row1 {
+    background-color: rgb(232, 243, 255);
+  }
+
+  .head {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10px;
+  }
