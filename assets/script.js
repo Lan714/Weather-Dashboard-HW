@@ -1,164 +1,63 @@
-const API = d91f911bcf2c0f925fb6535547a5ddc9
+const localStorage = window.localStorage
+const lastCity = (localStorage.getItem('last')) || ""
+let citySearch = ''
 
+let API = 6526862a1809d80a03753664a86c2445
 
-let cities = JSON.parse(localStorage.getItems('cities')) || []
-let lastCity - (localStorage.getItem('last')) || ""
+const searchWeather = () => {
+  console.log(locationSearch)
+  axios.get(`hhttps://api.openweathermap.org/data/2.5/weather?q=${locationSearch}&appid=${API}&units=imperial`)
+    .then(res => {
+      const location = res.data
+      console.log(location)
+      const weatherElem = document.createElement('div')
+      weatherElem.classList = 'card'
+      weatherElem.style = "width: 100%; border: 1px solid blue;"
+      weatherElem.innerHTML = `
+      <div id="${location.name}" class="card-body">
+            <img src="http://openweathermap.org/img/wn/${location.weather[0].icon}@2x.png" alt="${location.weather[0].main}">
+            <h4 class="card-title">${location.name}</h4>
+            <h5 class="card-subtitle mb-2">${location.weather[0].main}</h5>
+            <h6 class="card-text">Temperature: ${location.main.temp}°</h6>
+            <h6 class="card-text">Feels Like: ${location.main.feels_like}°</h6>
+            <h6 class="card-text">Humidity: ${location.main.humidity}</h6>
+            <h6 class="card-text">High: ${location.main.temp_max}°</h6>
+            <h6 class="card-text">Low: ${location.main.temp_min}°</h6>
+            <h6 class="card-text">Wind Speed: ${location.wind.speed}</h6>
+            <button type="submit" id="getFutureWeather" class="btn btn-primary futureWeather">Week Forecast</button>
+          </div>
+      `
+      document.getElementById('resultsHere').append(weatherElem)
+    })
+    catch(err => console.error(err))
+} 
 
-renderCities(cities, lastCity)
-
-document.getElementById('searchBtn').addEventListener('click', event => {
-  event.preventDefault()
-
-  let cityName = document.getElementById('city').value
-  let duplicate = false
-  cities.forEach(element => {
-    if (element.toUpperCase() === cityName.toUpperCase()) {
-      duplicate = true
+const fiveDayForecast = ()=> {
+  console.log(locationSearch)
+  axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${locationSearch}&appid=${API}&units=imperial`)
+  .then(res => {
+    const location = res.data 
+    console.log(location)
+    for(let i = 1; i < 41; i = i + 8) {
+      const forecastElem = document.createElement('div')
+      forecastElem.innerHTML = `
+       <div class="card" style="width:100%; border: 1px solid blue;">
+            <div class="card-body">
+              <img src="http://openweathermap.org/img/wn/${location.list[i].weather[0].icon}@2x.png">
+              <h4 class="card-title">${location.list[i].dt_txt}</h4>
+            <h5 class="card-subtitle mb-2">${location.list[i].weather[0].main}</h5>
+            <h6 class="card-text">Temperature: ${location.list[i].main.temp}°</h6>
+            <h6 class="card-text">Feels Like: ${location.list[i].main.feels_like}°</h6>
+            <h6 class="card-text">Humidity: ${location.list[i].main.humidity}</h6>
+            <h6 class="card-text">High: ${location.list[i].main.temp_max}°</h6>
+            <h6 class="card-text">Low: ${location.list[i].main.temp_min}°</h6>
+            <h6 class="card-text">Wind Speed: ${location.list[i].wind.speed}</h6>
+            </div>
+          </div
+      `
+      document.getElementById('resultsHere').append(forecastElem)
     }
   })
-  if (duplicate = false) {
-    cities.push(cityName)
-    localStorage.setItem('cities', JSON.stringify(cities))
-  }
-
-renderCities(cities, cityName)
-getWeather(cityName)
-lastCity = cityName
-localStorage.setItem('last', lastCity)
-document.getElementById('city').value=''
-
-})
-
-
-function removeAllChildNodes(parent) {
-  while (parent.firstChild) {
-    parent.removeChild(parent.firstChild);
-  }
 }
 
-function renderCities(cities, current) {
-  let list = document.getElementById('cityList')
-  removeAllChildNodes(list)
-
-  cities.forEach(element => {
-    let city = document.createElement('button')
-    city.type = 'button'
-    if (current.toUpperCase() === element.toUpperCase()) {
-      city.className = "list-group-item list-group-item-action active city"
-    } else {
-      city.className = "list-group-item list-group-item-action city"
-    }
-    city.innerHTML = element
-    list.append(city)
-  });
-
-  document.addEventListener('click', event => {
-    if ( event.target.classList.contains('city')) {
-      let cityName = event.target.innerHtml
-      console.log(cityName)
-      lastCity = cityName
-      renderCities(cities, cityName)
-      getWeather(cityName)
-      localStorage.setItem('last', lastCity)
-    }
-
-  })
-
-  const getWeather = (city) => {
-    axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city},us&units=imperial&appid=${API}`)
-    .then(res => {
-      let icon = res.data.weather[0].icon;
-
-      let erase = document.getElementById('todaysWeather')
-      removeAllChildNodes(erase)
-      console.log(res.data)
-      let container = document.createElement('div')
-      let header = document.createElement('h3')
-      header.innerHTML = `
-      ${res.data.name}
-      ${moment().format(`1`)}
-      <img id=""wicon" src="http://openweathermap.org/img/w/${icon}.png" alt="Weather icon">
-      `
-
-      container.append(header)
-      let temperature = document.createElement('p')
-      temperature.textContent = `Temperature: ${res.data.main.temp} F°`
-      container.append(temperature)
-      let humdity = document.createElement('p')
-      humdity.textContent = `Humidity: ${res.data.main.humdity}%`
-      container.append(humdity)
-      let windSpeed = document.createElement('p')
-      windSpeed.textContent = `Wind Speed: ${res.data.wind.speed} MPH`
-      container.append.(windSpeed)
-
-      document.getElementById('todaysWeather').append(container)
-      axios.get(`https://api.openweathermap.org/data/2.5/onecall?lat=${res.data.coord.lat}&lon=${res.data.coord.lon}&exclude=minutely,hourly&units=imperial&appid=${API}`)
-      .then(res => {
-        console.log(res)
-        let uvIndex = document.createElement('div')
-        let uv = res.data.current.uvi
-        let uviColor = getColorCodeForUVIndex(uv)
-        uvIndex.innerHTML = `<p style = "display: inline-block;">UV Index: </p> <span style= "display: 'inline-block'; background-color:${uviColor};margin:4px; padding: 5px; text-align:center;">${uv}</span>`
-
-        container.append(uvIndex)
-
-        let container2 = document.createElement('div')
-        container2.innerHTML= `
-        <h4 class = 'ms-3'>5-Day Forecast</h4>`
-        
-        removeAllChildNodes(document.getElementById('daily'))
-        document.getElementById('daily').append(container2)
-
-        for(i=1; i < 6; i++)
-        {
-          let card = document.createElement('div')
-          let icon = res.data.daily[i].weather[0].icon
-
-          card.style.display = "inline-block"
-          card.className = "card bg-primary text-white m-3"
-          card.style.width = "10rem"
-          card.style.justifyContent = "space-between"
-          card.innerHTML=`
-             <div class="card-body">
-         <h5 class="card-title">${moment().add(i, 'days').format('l')}</h5>
-         <img id="wicon" src="http://openweathermap.org/img/w/${icon}.png" alt="Weather icon">
-          <p class="card-text">Temperature: ${res.data.daily[i].temp.day} F
-          </p>
-          <p class="card-text">Humidity: ${res.data.daily[i].humidity}% </p>
-           </div>
-          `
-          container2.append(card)
-        }
-      }).catch(function (error) {
-        console.error(error);
-      })
-    }).catch(function(error){
-      console.error(error);
-    })
-  }
-
-  function getColorCodeForUVIndex(uvIndex) {
-    var uvIndexValue = parseFloat(uvIndex);
-    var colorcode = "";
-    if (uvIndexValue <= 2) {
-      colorcode = "#00ff00";
-    }
-    else if ((uvIndexValue > 2) && (uvIndexValue <= 5)) {
-      colorcode = "#ffff00";
-    }
-    else if ((uvIndexValue > 5) && (uvIndexValue <= 7)) {
-      colorcode = "#ffa500";
-    }
-    else if ((uvIndexValue > 7) && (uvIndexValue <= 10)) {
-      colorcode = "#9e1a1a";
-    }
-    else if (uvIndexValue > 10) {
-      colorcode = "#7f00ff";
-    }
-    return colorcode;
-  }
-
-getWeather(lastCity)
-
-
-
+let history = JSON.parse(localStorage.getItem('history')) || []
